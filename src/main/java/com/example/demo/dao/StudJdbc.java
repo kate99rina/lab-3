@@ -31,6 +31,9 @@ public class StudJdbc {
     public List<Student> getallStud() {
         return jdbcTemplate.query("SELECT * FROM student ", this::mapStud);
     }
+    public List<Student> getallStudLocal() {
+        return jdbcTemplate.query("SELECT * FROM student_local ", this::mapStud);
+    }
 
     public Student getStudByGroup(int study_group_id){
         return jdbcTemplate.queryForObject("SELECT * FROM student WHERE study_group_id = ?", this::mapStud, study_group_id);
