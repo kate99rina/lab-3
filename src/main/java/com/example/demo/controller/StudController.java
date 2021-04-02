@@ -1,66 +1,62 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.StudJdbc;
+import com.example.demo.Request;
+import com.example.demo.dao.StudentJdbc;
 import com.example.demo.model.Student;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @CrossOrigin
-public class StudController {
+public class StudentController {
+    private final StudentJdbc studentJdbc;
 
-    private final StudJdbc studJdbc;
-    public StudController(StudJdbc studJdbc){
-        this.studJdbc = studJdbc;
+    public StudentController(StudentJdbc studentJdbc) {
+        this.studentJdbc = studentJdbc;
     }
 
-    //Просмотр студента по id
-    @GetMapping("/student/{id}")
-    public Student students(@PathVariable int id){
-        Student student = studJdbc.getStud(id);
-        return  student;
-    }
-
-    //Просмотр всех студентов
-    @GetMapping("/student/")
-    public List<Student> students(){
-        List<Student> student = studJdbc.getallStud();
-        return  student;
-    }
-
-    //Просмотр студентов в группе
-    @GetMapping("/student/group/{group}")
-    public Student studByGroup(@PathVariable int group){
-        Student student = studJdbc.getStudByGroup(group);
-        return  student;
-    }
-
-    //Создание студента
+    // Создание студента
     @PostMapping("/student/insert/")
-    public int studIns(@RequestBody Request request){
-        int student = studJdbc.insStud(request.id, request.surname, request.name, request.second_name, request.study_group_id);
-        return  student;
+    public void insertStudent(@RequestBody Request request){
+        studentJdbc.insertStudent(request.id,request.name, request.surname, request.secondName, request.studyGroupId);
+    }
+
+    // Просмотр студента
+    @GetMapping("/student/{id}")
+    public Student getStudent(@PathVariable int id){
+        return studentJdbc.getStudent(id);
+    }
+
+    // Просмотр всех студентов
+    @GetMapping("/student")
+    public ArrayList<Student> getAllStudents(){
+        return studentJdbc.getAllStudents();
+    }
+
+    // Просмотр всех студентов отсортированный по алфвиту
+    @GetMapping("/sort_student")
+    public ArrayList<Student> getAllSortStudents(){
+        return studentJdbc.getAllSortStudents();
+    }
+
+    // Просмотр студентов по группе
+    @GetMapping("/group/{group_id}")
+    public ArrayList<Student> getAllStudentsByGroup(@PathVariable int group_id){
+        return studentJdbc.getAllStudentsByGroup(group_id);
     }
 
     //Обновление студента с id
     @PutMapping("/student/update/{id}")
-    public int updStudById(@PathVariable int id, @RequestBody Request request) {
-        int student = studJdbc.updateStud(id, request.surname, request.name, request.second_name, request.study_group_id);
-        return student;
+    public void updStudById(@PathVariable int id, @RequestBody Request request) {
+        studentJdbc.updateStudent(id, request.surname, request.name, request.secondName, request.studyGroupId);
     }
+
+    // Удаление студента
     @DeleteMapping("/student/delete/{id}")
-    public int delStudById(@PathVariable int id){
-        int student = studJdbc.delStud(id);
-        return student;
+    public void deleteStudent(@PathVariable int id){
+        studentJdbc.deleteStudent(id);
     }
+
 }
 
-class Request{
-    public int id;
-    public String name;
-    public String surname;
-    public String second_name;
-    public int study_group_id;
-}

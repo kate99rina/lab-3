@@ -1,57 +1,55 @@
 package com.example.demo.controller;
+import com.example.demo.Request;
 import com.example.demo.dao.GroupJdbc;
-import com.example.demo.dao.StudJdbc;
+import com.example.demo.model.FieldName;
 import com.example.demo.model.Group;
-import com.example.demo.model.Student;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @CrossOrigin
 public class GroupController {
     private final GroupJdbc groupJdbc;
-    public GroupController(GroupJdbc groupJdbc){
+
+    public GroupController(GroupJdbc groupJdbc) {
         this.groupJdbc = groupJdbc;
     }
 
-    //Просмотр группы
-    @GetMapping("/group/{id}")
-    public Group group(@PathVariable int id){
-        Group group =groupJdbc.getGroup(id);
-        return  group;
+    // Просмотр группы
+    @GetMapping("/groups/{id}")
+    public Group getGroup(@PathVariable int id) {
+        return groupJdbc.getGroup(id);
     }
 
-    //Просмотр всех групп
-    @GetMapping("/group")
-    public List<Group> groups(){
-        List<Group> group = groupJdbc.getAllGroup();
-        return  group;
+    // Просмотр всех групп
+    @GetMapping("/groups")
+    public ArrayList<Group> getAllGroup() {
+        return groupJdbc.getAllGroup();
     }
 
-    //Создание группы
-    @PostMapping("/group/insert/")
-    public int insGroup(@RequestBody RequestG request){
-        int group = groupJdbc.insGroup(request.id, request.name);
-        return  group;
+    // Просмотр всех доступных групп
+    @GetMapping("/avaliablegroups/{id}")
+    public List<FieldName> getAvailableGroup(@PathVariable int id) {
+        return groupJdbc.getAvailableGroup(id);
     }
 
-    //Обновление группы с id
-    @PutMapping("/group/update/{id}")
-    public int updGroupById(@PathVariable int id, @RequestBody RequestG request) {
-        int group = groupJdbc.updGroup(id,request.name);
-        return group;
+    // Создание группы
+    @PostMapping("/group/insert")
+    public void insertGroup(@RequestBody Request request) {
+        groupJdbc.insertGroup(request.id, request.name);
     }
 
-    //Удалить группу
+    // Редактирование группы
+    @PostMapping("/group/update/{id}")
+    public void updateGroup(@PathVariable int id, @RequestBody Request request) {
+        groupJdbc.updateGroup(id, request.name);
+    }
+
+    // Удаление группы
     @DeleteMapping("/group/delete/{id}")
-    public int delGroupById(@PathVariable int id){
-        int group = groupJdbc.delGroup(id);
-        return group;
+    public void delGroupById(@PathVariable int id) {
+        groupJdbc.deleteGroup(id);
     }
-}
-
-class RequestG{
-    public int id;
-    public String name;
 }
